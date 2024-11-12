@@ -1,0 +1,40 @@
+pipeline {
+    agent any 
+    tools {
+        maven 'maven'  // Ensure Maven is configured correctly in Jenkins tools
+    }
+    stages {
+        stage("Clean Up") {
+            steps { 
+                // Clean the workspace to remove any leftover files from previous builds
+                deleteDir()  
+            }
+        }
+        stage("Clone Repository") {
+            steps {
+                // Clone the exp1spring repository from GitHub
+                sh "git clone https://github.com/Seif280/exp1spring.git"
+            }
+        }
+        stage("Generate Backend Image") {
+            steps {
+                // Navigate into the repository directory
+                dir("exp1spring") {
+                    // Run Maven clean install to build the project
+                    sh "mvn clean install"
+                    // Build the Docker image using the Dockerfile in the repository
+                    sh "docker build -t docexp1.spring ."
+                }
+            }
+        }
+        stage("Run Docker Compose") {
+            steps {
+                // Navigate into the repository directory
+                dir("exp1spring") {
+                    // Run Docker Compose in detached mode
+                    sh "docker-compose up -d"
+                }
+            }
+        }
+    }
+}
