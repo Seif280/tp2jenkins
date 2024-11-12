@@ -1,36 +1,49 @@
 pipeline {
-    agent any 
+    agent any
+
     tools {
         maven 'maven'  // Ensure Maven is configured correctly in Jenkins tools
     }
+
     stages {
         stage("Clean Up") {
-            steps { 
+            steps {
                 // Clean the workspace to remove any leftover files from previous builds
-                deleteDir()  
+                deleteDir()
             }
         }
+
         stage("Clone Repository") {
             steps {
                 // Clone the exp1spring repository from GitHub
                 sh "git clone https://github.com/Seif280/exp1spring.git"
             }
         }
+
         stage("Generate Backend Image") {
             steps {
-                // Navigate into the repository directory
-                dir("tp2jenkins") {
-                    // Run Maven clean install to build the project
-                    sh "mvn clean install"
+                // Navigate into the repository directory where the pom.xml is located
+                dir("exp1spring") {
+                    // Check if pom.xml exists before attempting Maven build
+                    script {
+                        if (fileExists('pom.xml')) {
+                            // Run Maven clean install to build the project
+                            sh "mvn clean install"
+                        } else {
+                            error "pom.xml not found in the exp1spring directory."
+                        }
+                    }
+
                     // Build the Docker image using the Dockerfile in the repository
-                    sh "docker build -t docexp1-spring ."
+                    sh "docker build -t docexp1.spring ."
                 }
             }
         }
+
         stage("Run Docker Compose") {
             steps {
-                // Navigate into the repository directory
-                dir("tp2jenkins") {
+                // Navigate into the repository directory where docker-compose.yml is located
+                dir("exp1spring") {
                     // Run Docker Compose in detached mode
                     sh "docker-compose up -d"
                 }
@@ -38,3 +51,4 @@ pipeline {
         }
     }
 }
+
