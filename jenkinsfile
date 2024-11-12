@@ -19,7 +19,7 @@ pipeline {
         stage("Generate Backend Image") {
             steps {
                 // Navigate into the repository directory
-                dir("exp1spring") {
+                dir("tp2jenkins") {
                     // Run Maven clean install to build the project
                     sh "mvn clean install"
                     // Build the Docker image using the Dockerfile in the repository
@@ -30,7 +30,7 @@ pipeline {
         stage("Run Docker Compose") {
             steps {
                 // Navigate into the repository directory
-                dir("exp1spring") {
+                dir("tp2jenkins") {
                     // Run Docker Compose in detached mode
                     sh "docker-compose up -d"
                 }
