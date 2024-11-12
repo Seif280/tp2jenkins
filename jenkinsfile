@@ -23,7 +23,7 @@ pipeline {
                     // Run Maven clean install to build the project
                     sh "mvn clean install"
                     // Build the Docker image using the Dockerfile in the repository
-                    sh "docker build -t docexp1.spring ."
+                    sh "docker build -t docexp1-spring ."
                 }
             }
         }
